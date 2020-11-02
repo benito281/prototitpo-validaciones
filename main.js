@@ -1,19 +1,36 @@
 //Validamos la contraseña si la contraseña es menor a 4
 //entonces retorna falso pero sino retorna verdadero
 const validarContraseña=(contraseña)=>{
-if (contraseña.length <= 4) return false
-return true
+if (contraseña.length <= 4) {
+    return true;
+}
+else{
+    return false;
+}
+
 }
   //Si el nombre es menor a 4 retorna falso si no verdadero
 const validarNombre=(usuario)=>{
-    if (usuario.length<=4) return false
-    return true
+    if (usuario.length<=4) {
+        return true;
+    }
+    else{
+        return false;
+    }
 }
 
-
-let validaciones=[validarContraseña,
-    validarNombre];
-
+const getHtmlAlert=(tipo, mensaje)=>{
+    return ` <div class="alert alert-${tipo}" role="alert">
+                ${mensaje}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                   <span aria-hidden="true">&times;</span>
+                </button>
+             </div>`
+ }
+ 
+ const showAlert=(tipo, mensaje, respuesta)=>{
+    respuesta.innerHTML= getHtmlAlert(tipo, mensaje);
+ }
 let respuesta = document.getElementById('respuesta');
 let formulario=document.querySelector("#formulario");
 formulario.addEventListener('submit',function(e){
@@ -24,18 +41,29 @@ formulario.addEventListener('submit',function(e){
 //Lo que busco es que muestre varios mensajes en un solo div 
 //En ves de hacer varios divs para cada validacion 
 
-       validaciones.forEach(function(errores){
-            if (!errores[0]) {
+let datos = new FormData(formulario)
+    const getData = async () => {
+       await fetch('insert/post.php',{
+        method: 'POST', 
+        body: datos
+    })
+    .then( res => res.json()) 
+    .then( data => {
+        console.log(data)
+    })
+    }
+       //Validaciones
+            if (validarNombre(usuario)) {
                 respuesta.innerHTML+= ` <div class="alert alert-danger" role="alert">
                 EL NOMBRE ES CORTO
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                    <span aria-hidden="true">&times;</span>
                 </button>
              </div>`
-
                 console.log('La contraseña es corta')
             }
-            if (!errores[1]) {
+            if (validarContraseña(contraseña)) {
+        
                 respuesta.innerHTML+= ` <div class="alert alert-danger" role="alert">
                 EL CONTRASEÑA ES CORTO
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -45,19 +73,21 @@ formulario.addEventListener('submit',function(e){
                 console.log('El nombres es corto')
             }
             else{
+                
                 respuesta.innerHTML+= ` <div class="alert alert-success" role="alert">
                 Todo a salido bien
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                    <span aria-hidden="true">&times;</span>
                 </button>
              </div>`
+             getData();
             }
-        })
+        
 })
 
 
   
-
+//http://127.0.0.2:5500/index.html
 
 
 /*let respuesta = document.getElementById('respuesta');
